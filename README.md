@@ -458,10 +458,8 @@ http://localhost:5173
 ## 👨‍💻 Developer
 
 **Ashutosh Kumar**
-
-B.Tech – Computer Science Engineering
-Institute of Engineering & Science, IPS Academy
-
+**Sahil Kumar Patro**
+**Rakesh Kumar**
 **Technologies:** Java | Spring Boot | React.js | JavaScript | MySQL | Hibernate/JPA | REST APIs | JWT
 
 ---
