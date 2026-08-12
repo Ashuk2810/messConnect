@@ -11,7 +11,7 @@ The application is built using **React.js for the frontend, Spring Boot for the 
 ### Login Page
 
 
-images/WhatsApp Image 2026-08-04 at 12.22.13 AM
+images/WhatsApp Image 2026-08-04 at 12.22.13 AM.jpeg
 
 
 ### Admin Dashboard
