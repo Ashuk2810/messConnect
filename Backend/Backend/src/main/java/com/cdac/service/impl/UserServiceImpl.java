@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.cdac.dto.LoginRequest;
 import com.cdac.dto.LoginResponse;
 import com.cdac.dto.UserProfileResponse;
+import com.cdac.dto.UserProfileUpdateRequest;
 import com.cdac.dto.UserRegistrationRequest;
 import com.cdac.dto.UserRegistrationResponse;
 import com.cdac.entity.User;
@@ -240,5 +241,33 @@ private EmailService emailService;
         response.setStatus(user.getStatus());
 
         return response;
+    }
+    
+    @Override
+    public UserProfileResponse updateMyProfile(
+            String userCode,
+            UserProfileUpdateRequest request) {
+
+        User user =
+                userRepository.findByUserCode(userCode)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "User Not Found"));
+
+        if (request.getFullName() == null ||
+                request.getFullName().trim().isEmpty()) {
+
+            throw new RuntimeException(
+                    "Name cannot be empty");
+        }
+
+        validateMobile(request.getMobile());
+
+        user.setFullName(request.getFullName().trim());
+        user.setMobile(request.getMobile());
+
+        User updatedUser = userRepository.save(user);
+
+        return mapToProfileResponse(updatedUser);
     }
 }

@@ -18,6 +18,7 @@ import com.cdac.dto.VerifyOtpRequest;
 import com.cdac.enums.UserStatus;
 import com.cdac.service.OtpService;
 import com.cdac.service.UserService;
+import com.cdac.dto.UserProfileUpdateRequest;
 
 @RestController
 @RequestMapping("/api/users")
@@ -49,7 +50,7 @@ public class UserController {
 
         otpService.sendOtp(request.getUserCode());
 
-        return "OTP Sent Successfully";
+        return "OTP has been sent successfully";
     }
 
     @PostMapping("/verify-otp")
@@ -60,7 +61,7 @@ public class UserController {
                 request.getUserCode(),
                 request.getOtp());
 
-        return "OTP Verified Successfully";
+        return "OTP verified successfully";
     }
 
     @PostMapping("/reset-password")
@@ -71,7 +72,7 @@ public class UserController {
                 request.getUserCode(),
                 request.getNewPassword());
 
-        return "Password Reset Successfully";
+        return "Password reset successfully";
     }
 
     @GetMapping("/profile")
@@ -80,6 +81,16 @@ public class UserController {
 
         return userService.getProfile(
                 authentication.getName());
+    }
+    
+    @PutMapping("/profile")
+    public UserProfileResponse updateMyProfile(
+            Authentication authentication,
+            @RequestBody UserProfileUpdateRequest request) {
+
+        return userService.updateMyProfile(
+                authentication.getName(),
+                request);
     }
 
     @GetMapping("/test")
@@ -105,7 +116,7 @@ public class UserController {
                 userId,
                 status);
 
-        return "User status updated successfully";
+        return "User status has been updated successfully";
     }
 
     @PutMapping("/{userId}")
@@ -118,6 +129,6 @@ public class UserController {
                 userId,
                 request);
 
-        return "User updated successfully";
+        return "User has been updated successfully";
     }
 }
