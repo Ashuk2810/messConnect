@@ -1,0 +1,249 @@
+.dashboard {
+    display: flex;
+    min-height: 100vh;
+    background: #f5f7fb;
+}
+
+.sidebar {
+    width: 220px;
+    background: #0b5d4b;
+    color: white;
+    padding: 15px;
+    flex-shrink: 0;
+}
+
+.sidebar h2 {
+    text-align: center;
+    margin: 5px 0 22px;
+    font-size: 20px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 9px 11px;
+    margin: 5px 0;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.sidebar a:hover {
+    background: #14866d;
+}
+
+.content {
+    flex: 1;
+    padding: 22px 28px;
+    overflow-x: auto;
+}
+
+.content h1 {
+    margin: 0 0 18px;
+    font-size: 25px;
+}
+
+.content h2 {
+    margin: 16px 0 10px;
+    font-size: 20px;
+}
+
+.content h3 {
+    margin: 12px 0 8px;
+    font-size: 16px;
+}
+
+.content p {
+    margin: 6px 0;
+    font-size: 14px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(2, 230px);
+    gap: 14px;
+    margin-top: 20px;
+}
+
+.card {
+    background: white;
+    padding: 14px 16px;
+    border-radius: 8px;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 14px;
+}
+
+.card h2,
+.card h3,
+.card h4 {
+    margin-top: 0;
+}
+
+.billingTop {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.searchBox {
+    padding: 9px 11px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 260px;
+    font-size: 14px;
+}
+
+.foodTable {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    margin-bottom: 14px;
+    font-size: 14px;
+}
+
+.foodTable th {
+    background: #0b5d4b;
+    color: white;
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.foodTable td {
+    padding: 7px 10px;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: middle;
+}
+
+.foodTable tr:hover {
+    background: #f8fafc;
+}
+
+.addBtn,
+.editBtn,
+.deleteBtn {
+    border: none;
+    border-radius: 5px;
+    padding: 7px 12px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.addBtn {
+    background: #0b5d4b;
+    color: white;
+}
+
+.addBtn:hover {
+    background: #14866d;
+}
+
+.editBtn {
+    background: #2563eb;
+    color: white;
+}
+
+.editBtn:hover {
+    background: #1d4ed8;
+}
+
+.deleteBtn {
+    background: #dc2626;
+    color: white;
+}
+
+.deleteBtn:hover {
+    background: #b91c1c;
+}
+
+.qtyBtn {
+    width: 27px;
+    height: 27px;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    background: #0f5c4d;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.qtyBtn:hover {
+    background: #d97706;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.menuCategoryTitle {
+    margin-top: 14px;
+    margin-bottom: 7px;
+    color: #0b5d4b;
+    font-size: 16px;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 12px 0;
+}
+
+select {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #0b5d4b;
+}
+
+@media (max-width: 768px) {
+
+    .sidebar {
+        width: 180px;
+        padding: 12px;
+    }
+
+    .content {
+        padding: 18px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .billingTop {
+        flex-wrap: wrap;
+    }
+
+    .searchBox {
+        width: 220px;
+    }
+
+    .foodTable {
+        min-width: 600px;
+    }
+}
+.dashboardHero {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    border-radius: 14px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+}
+
+.dashboardHero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}

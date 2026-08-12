@@ -1,0 +1,69 @@
+.dashboardHero {
+    position: relative;
+    width: 100%;
+    height: 230px;
+    margin-bottom: 22px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+}
+
+.dashboardHero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 55%;
+    display: block;
+}
+
+.dashboardHero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.58),
+        rgba(0, 0, 0, 0.12),
+        rgba(0, 0, 0, 0)
+    );
+}
+
+.dashboardHeroOverlay {
+    position: absolute;
+    z-index: 2;
+    left: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+}
+
+.dashboardHeroOverlay h1 {
+    margin: 0 0 6px;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.dashboardHeroOverlay p {
+    margin: 0;
+    font-size: 15px;
+    opacity: 0.95;
+}
+
+@media (max-width: 768px) {
+    .dashboardHero {
+        height: 180px;
+        border-radius: 9px;
+    }
+
+    .dashboardHeroOverlay {
+        left: 18px;
+    }
+
+    .dashboardHeroOverlay h1 {
+        font-size: 22px;
+    }
+
+    .dashboardHeroOverlay p {
+        font-size: 13px;
+    }
+}
