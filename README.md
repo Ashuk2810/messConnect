@@ -17,35 +17,19 @@ The application is built using **React.js for the frontend, Spring Boot for the 
 
 ### User Dashboard
 
-**ADD IMAGE HERE**
-
-<!-- Add your user dashboard screenshot here -->
+![User Page](Images/UserPage.png)
 
 ### Food Management
 
-**ADD IMAGE HERE**
-
-<!-- Add your food management screenshot here -->
+![Food Page](Images/FoodManagement.png)
 
 ### Wallet Management
 
-**ADD IMAGE HERE**
-
-<!-- Add your wallet screenshot here -->
+![wallet Page](Images/WalletManagement.png)
 
 ### Billing
 
-**ADD IMAGE HERE**
-
-<!-- Add your billing screenshot here -->
-
-### Transaction History
-
-**ADD IMAGE HERE**
-
-<!-- Add your transaction history screenshot here -->
-
----
+![Billing page](Images/BillingStaffPage.png)
 
 ## 🚀 Features
 
