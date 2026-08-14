@@ -161,15 +161,6 @@ MessConnect follows a **client-server architecture** where the React frontend co
                   │       Database       │
                   └──────────────────────┘
 ```
-
-### Architecture Image
-
-**ADD IMAGE HERE**
-
-<!-- Add your system architecture diagram here -->
-
----
-
 ## 🔐 Authentication Flow
 
 MessConnect uses **JWT-based authentication** to secure the application.
@@ -182,12 +173,6 @@ MessConnect uses **JWT-based authentication** to secure the application.
 6. The token is sent with protected API requests.
 7. Spring Security validates the token.
 8. The requested operation is allowed according to the user's role.
-
-**ADD IMAGE HERE**
-
-<!-- Add JWT authentication flow diagram here -->
-
----
 
 ## 👥 User Roles
 
@@ -224,14 +209,7 @@ Save Transaction
      ▼
 Update Wallet Balance
 ```
-
 If a refund is required, the refund amount is credited back to the user's wallet and the corresponding transaction is recorded.
-
-**ADD IMAGE HERE**
-
-<!-- Add wallet/billing flow diagram or screenshot here -->
-
----
 
 ## 🗄️ Database Design
 
@@ -250,12 +228,6 @@ Major entities include:
 * Notification
 
 The database follows relational database principles and uses relationships between entities to maintain data consistency.
-
-**ADD IMAGE HERE**
-
-<!-- Add ER diagram/database diagram here -->
-
----
 
 ## 📁 Project Structure
 
@@ -335,12 +307,6 @@ Testing included:
 * Bill generation
 * Refund operations
 * Feedback APIs
-
-**ADD IMAGE HERE**
-
-<!-- Add Postman API screenshots here -->
-
----
 
 ## 🔒 Security
 
@@ -436,9 +402,10 @@ http://localhost:5173
 
 ## 👨‍💻 Developer
 
-**Ashutosh Kumar**
-**Sahil Kumar Patro**
+**Ashutosh Kumar,**
+**Sahil Kumar Patro,**
 **Rakesh Kumar**
+
 **Technologies:** Java | Spring Boot | React.js | JavaScript | MySQL | Hibernate/JPA | REST APIs | JWT
 
 ---
