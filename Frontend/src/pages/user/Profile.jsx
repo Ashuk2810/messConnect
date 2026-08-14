@@ -4,508 +4,518 @@ import api from "../../services/api";
 import "../admin/Admin.css";
 
 function Profile() {
+  const [profile, setProfile] = useState(null);
 
-    const [profile, setProfile] = useState(null);
+  // Edit Profile states
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editMobile, setEditMobile] = useState("");
 
-    const [showChangePassword, setShowChangePassword] = useState(false);
+  // Change Password states
+  const [showChangePassword, setShowChangePassword] = useState(false);
 
-    const [otpSent, setOtpSent] = useState(false);
-    const [otpVerified, setOtpVerified] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
 
-    const [otp, setOtp] = useState("");
-    const [newPassword, setNewPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+  const [otp, setOtp] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-    const [message, setMessage] = useState("");
-    const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
-    useEffect(() => {
+  // Load Profile
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const res = await api.get("/users/profile");
 
-        const loadProfile = async () => {
+        console.log("Profile Response:", res.data);
 
-            try {
+        setProfile(res.data);
+      } catch (err) {
+        console.log("Profile Error:", err);
 
-                const res = await api.get("/users/profile");
-
-                console.log("Profile Response:", res.data);
-
-                setProfile(res.data);
-
-            } catch (err) {
-
-                console.log("Profile Error:", err);
-
-                setError("Unable to load profile");
-
-            }
-
-        };
-
-        loadProfile();
-
-    }, []);
-
-    const handleSendOtp = async () => {
-
-        setMessage("");
-        setError("");
-
-        if (!profile?.userCode) {
-
-            setError(
-                "User profile is still loading. Please try again."
-            );
-
-            return;
-        }
-
-        console.log(
-            "USER CODE FROM PROFILE:",
-            profile.userCode
-        );
-
-        try {
-
-            await api.post("/users/forgot-password", {
-
-                userCode: profile.userCode
-
-            });
-
-            setOtpSent(true);
-
-            setMessage(
-                "OTP sent successfully to your registered email."
-            );
-
-        } catch (err) {
-
-            console.log("Send OTP Error:", err);
-
-            console.log(
-                "Backend Response:",
-                err.response?.data
-            );
-
-            setError(
-                err.response?.data?.message ||
-                err.response?.data ||
-                "Unable to send OTP"
-            );
-
-        }
-
+        setError("Unable to load profile");
+      }
     };
 
-    const handleVerifyOtp = async () => {
+    loadProfile();
+  }, []);
 
-        setMessage("");
-        setError("");
+  // Start Editing Profile
+  const handleEditProfile = () => {
+    setEditName(profile?.fullName || "");
+    setEditMobile(profile?.mobile || "");
 
-        if (!otp) {
+    setEditingProfile(true);
 
-            setError("Please enter OTP");
+    setMessage("");
+    setError("");
+  };
 
-            return;
-        }
+  // Cancel Editing Profile
+  const handleCancelEdit = () => {
+    setEditingProfile(false);
 
-        try {
+    setEditName("");
+    setEditMobile("");
 
-            await api.post("/users/verify-otp", {
+    setMessage("");
+    setError("");
+  };
 
-                userCode: profile.userCode,
-                otp: otp
+  // Update Profile
+  const handleUpdateProfile = async () => {
+    setMessage("");
+    setError("");
 
-            });
+    // Validate name
+    if (!editName.trim()) {
+      setError("Name cannot be empty");
 
-            setOtpVerified(true);
+      return;
+    }
 
-            setMessage(
-                "OTP verified successfully. You can now set a new password."
-            );
+    // Validate mobile
+    if (!/^[6-9][0-9]{9}$/.test(editMobile)) {
+      setError(
+        "Enter a valid 10-digit mobile number starting with 6, 7, 8 or 9",
+      );
 
-        } catch (err) {
+      return;
+    }
 
-            console.log("OTP Verification Error:", err);
+    try {
+      const res = await api.put("/users/profile", {
+        fullName: editName.trim(),
 
-            setError(
-                err.response?.data?.message ||
-                err.response?.data ||
-                "Invalid or expired OTP"
-            );
+        mobile: editMobile,
+      });
 
-        }
+      console.log("Profile Update Response:", res.data);
 
-    };
+      // Update profile displayed on page
+      setProfile(res.data);
 
-    const handleResetPassword = async () => {
+      // Exit edit mode
+      setEditingProfile(false);
 
-        setMessage("");
-        setError("");
+      setEditName("");
+      setEditMobile("");
 
-        if (!newPassword || !confirmPassword) {
+      setMessage("Profile updated successfully.");
+    } catch (err) {
+      console.log("Profile Update Error:", err);
 
-            setError("Please enter both password fields");
+      console.log("Backend Response:", err.response?.data);
 
-            return;
-        }
+      setError(
+        err.response?.data?.message ||
+          err.response?.data ||
+          "Unable to update profile",
+      );
+    }
+  };
 
-        if (newPassword !== confirmPassword) {
+  // Send OTP
+  const handleSendOtp = async () => {
+    setMessage("");
+    setError("");
 
-            setError("Passwords do not match");
+    if (!profile?.userCode) {
+      setError("User profile is still loading. Please try again.");
 
-            return;
-        }
+      return;
+    }
 
-        try {
+    console.log("USER CODE FROM PROFILE:", profile.userCode);
 
-            await api.post("/users/reset-password", {
+    try {
+      await api.post("/users/forgot-password", {
+        userCode: profile.userCode,
+      });
 
-                userCode: profile.userCode,
-                newPassword: newPassword
+      setOtpSent(true);
 
-            });
+      setMessage("OTP sent successfully to your registered email.");
+    } catch (err) {
+      console.log("Send OTP Error:", err);
 
-            setMessage(
-                "Password changed successfully."
-            );
+      console.log("Backend Response:", err.response?.data);
 
-            setOtpSent(false);
-            setOtpVerified(false);
+      setError(
+        err.response?.data?.message ||
+          err.response?.data ||
+          "Unable to send OTP",
+      );
+    }
+  };
 
-            setOtp("");
-            setNewPassword("");
-            setConfirmPassword("");
+  // Verify OTP
+  const handleVerifyOtp = async () => {
+    setMessage("");
+    setError("");
 
-            setShowChangePassword(false);
+    if (!otp) {
+      setError("Please enter OTP");
 
-        } catch (err) {
+      return;
+    }
 
-            console.log("Reset Password Error:", err);
+    try {
+      await api.post("/users/verify-otp", {
+        userCode: profile.userCode,
 
-            setError(
-                err.response?.data?.message ||
-                err.response?.data ||
-                "Unable to change password"
-            );
+        otp: otp,
+      });
 
-        }
+      setOtpVerified(true);
 
-    };
+      setMessage("OTP verified successfully. You can now set a new password.");
+    } catch (err) {
+      console.log("OTP Verification Error:", err);
 
-    return (
+      setError(
+        err.response?.data?.message ||
+          err.response?.data ||
+          "Invalid or expired OTP",
+      );
+    }
+  };
 
-        <div className="dashboard">
+  // Reset Password
+  const handleResetPassword = async () => {
+    setMessage("");
+    setError("");
 
-            <div className="sidebar">
+    if (!newPassword || !confirmPassword) {
+      setError("Please enter both password fields");
 
-                <h2>👤 MessConnect</h2>
+      return;
+    }
 
-                <Link to="/user/dashboard">
-                    🏠 Dashboard
-                </Link>
+    if (newPassword !== confirmPassword) {
+      setError("Passwords do not match");
 
-                <Link to="/user/menu">
-                    🍽 Today's Menu
-                </Link>
+      return;
+    }
 
-                
-                <Link to="/user/profile">
-                    👤 Profile
-                </Link>
+    try {
+      await api.post("/users/reset-password", {
+        userCode: profile.userCode,
 
-                <Link to="/user/wallet">
-                    💳 Wallet
-                </Link>
+        newPassword: newPassword,
+      });
 
-                <Link to="/user/notifications">
-                    🔔 Notifications
-                </Link>
+      setMessage("Password changed successfully.");
+
+      setOtpSent(false);
+      setOtpVerified(false);
 
-                <Link to="/user/feedback">
-                    ⭐ Feedback
-                </Link>
+      setOtp("");
+      setNewPassword("");
+      setConfirmPassword("");
 
-                <Link to="/login">
-                    🚪 Logout
-                </Link>
+      setShowChangePassword(false);
+    } catch (err) {
+      console.log("Reset Password Error:", err);
 
-            </div>
+      setError(
+        err.response?.data?.message ||
+          err.response?.data ||
+          "Unable to change password",
+      );
+    }
+  };
 
-            <div className="content">
+  return (
+    <div className="dashboard">
+      {/* SIDEBAR */}
 
-                <h1>User Profile</h1>
+      <div className="sidebar">
+        <h2>👤 MessConnect</h2>
 
-                {message && (
+        <Link to="/user/dashboard">🏠 Dashboard</Link>
 
-                    <p style={{
-                        color: "green",
-                        fontWeight: "bold"
-                    }}>
-                        {message}
-                    </p>
-
-                )}
-
-                {error && (
+        <Link to="/user/menu">🍽 Today's Menu</Link>
 
-                    <p style={{
-                        color: "red",
-                        fontWeight: "bold"
-                    }}>
-                        {error}
-                    </p>
+        <Link to="/user/profile">👤 Profile</Link>
 
-                )}
+        <Link to="/user/wallet">💳 Wallet</Link>
 
-                <div className="cards">
+        <Link to="/user/notifications">🔔 Notifications</Link>
+
+        <Link to="/user/feedback">⭐ Feedback</Link>
+
+        <Link to="/login">🚪 Logout</Link>
+      </div>
+
+      {/* MAIN CONTENT */}
+
+      <div className="content">
+        <h1>User Profile</h1>
+
+        {/* SUCCESS MESSAGE */}
+
+        {message && (
+          <p
+            style={{
+              color: "green",
+              fontWeight: "bold",
+            }}
+          >
+            {message}
+          </p>
+        )}
+
+        {/* ERROR MESSAGE */}
+
+        {error && (
+          <p
+            style={{
+              color: "red",
+              fontWeight: "bold",
+            }}
+          >
+            {error}
+          </p>
+        )}
+
+        {/* PROFILE CARD */}
+
+        <div className="cards">
+          <div className="card">
+            <h2>Personal Information</h2>
 
-                    <div className="card">
+            <table className="foodTable">
+              <tbody>
+                {/* NAME */}
 
-                        <h2>Personal Information</h2>
-
-                        <table className="foodTable">
-
-                            <tbody>
-
-                                <tr>
-                                    <td>
-                                        <b>Name</b>
-                                    </td>
-
-                                    <td>
-                                        {profile?.fullName ||
-                                            "Not Available"}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <b>User Code</b>
-                                    </td>
-
-                                    <td>
-                                        {profile?.userCode ||
-                                            "Not Available"}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <b>Email</b>
-                                    </td>
-
-                                    <td>
-                                        {profile?.email ||
-                                            "Not Available"}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <b>Mobile</b>
-                                    </td>
-
-                                    <td>
-                                        {profile?.mobile ||
-                                            "Not Available"}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <b>Role</b>
-                                    </td>
-
-                                    <td>
-                                        {profile?.role ||
-                                            "Not Available"}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <b>User Type</b>
-                                    </td>
-
-                                    <td>
-                                        {profile?.userType ||
-                                            "Not Available"}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <b>Status</b>
-                                    </td>
-
-                                    <td>
-                                        {profile?.status ||
-                                            "Not Available"}
-                                    </td>
-                                </tr>
-
-                            </tbody>
-
-                        </table>
-
-                        <br />
-
-                        <button
-                            className="editBtn"
-                            onClick={() => {
-
-                                setShowChangePassword(
-                                    !showChangePassword
-                                );
-
-                                setMessage("");
-                                setError("");
-
-                            }}
-                        >
-                            🔐 Change Password
-                        </button>
-
-                    </div>
-
-                </div>
-
-                {showChangePassword && (
-
-                    <div className="cards">
-
-                        <div className="card">
-
-                            <h2>Change Password</h2>
-
-                            {!otpSent && (
-
-                                <div>
-
-                                    <p>
-                                        An OTP will be sent to your
-                                        registered email address.
-                                    </p>
-
-                                    <button
-                                        className="addBtn"
-                                        onClick={handleSendOtp}
-                                    >
-                                        📧 Send OTP
-                                    </button>
-
-                                </div>
-
-                            )}
-
-                            {otpSent && !otpVerified && (
-
-                                <div>
-
-                                    <p>
-                                        Enter the OTP sent to your
-                                        registered email.
-                                    </p>
-
-                                    <input
-                                        type="text"
-                                        placeholder="Enter 6-digit OTP"
-                                        value={otp}
-                                        onChange={(e) =>
-                                            setOtp(e.target.value)
-                                        }
-                                        maxLength="6"
-                                    />
-
-                                    <br />
-                                    <br />
-
-                                    <button
-                                        className="addBtn"
-                                        onClick={handleVerifyOtp}
-                                    >
-                                        Verify OTP
-                                    </button>
-
-                                    <br />
-                                    <br />
-
-                                    <button
-                                        className="editBtn"
-                                        onClick={handleSendOtp}
-                                    >
-                                        Resend OTP
-                                    </button>
-
-                                </div>
-
-                            )}
-
-                            {otpVerified && (
-
-                                <div>
-
-                                    <p style={{
-                                        color: "green",
-                                        fontWeight: "bold"
-                                    }}>
-                                        OTP Verified ✓
-                                    </p>
-
-                                    <input
-                                        type="password"
-                                        placeholder="Enter New Password"
-                                        value={newPassword}
-                                        onChange={(e) =>
-                                            setNewPassword(
-                                                e.target.value
-                                            )
-                                        }
-                                    />
-
-                                    <br />
-                                    <br />
-
-                                    <input
-                                        type="password"
-                                        placeholder="Confirm New Password"
-                                        value={confirmPassword}
-                                        onChange={(e) =>
-                                            setConfirmPassword(
-                                                e.target.value
-                                            )
-                                        }
-                                    />
-
-                                    <br />
-                                    <br />
-
-                                    <button
-                                        className="addBtn"
-                                        onClick={
-                                            handleResetPassword
-                                        }
-                                    >
-                                        Change Password
-                                    </button>
-
-                                </div>
-
-                            )}
-
-                        </div>
-
-                    </div>
-
-                )}
-
-            </div>
-
+                <tr>
+                  <td>
+                    <b>Name</b>
+                  </td>
+
+                  <td>
+                    {editingProfile ? (
+                      <input
+                        type="text"
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        placeholder="Enter your name"
+                      />
+                    ) : (
+                      profile?.fullName || "Not Available"
+                    )}
+                  </td>
+                </tr>
+
+                {/* USER CODE */}
+
+                <tr>
+                  <td>
+                    <b>User Code</b>
+                  </td>
+
+                  <td>{profile?.userCode || "Not Available"}</td>
+                </tr>
+
+                {/* EMAIL */}
+
+                <tr>
+                  <td>
+                    <b>Email</b>
+                  </td>
+
+                  <td>{profile?.email || "Not Available"}</td>
+                </tr>
+
+                {/* MOBILE */}
+
+                <tr>
+                  <td>
+                    <b>Mobile</b>
+                  </td>
+
+                  <td>
+                    {editingProfile ? (
+                      <input
+                        type="text"
+                        value={editMobile}
+                        onChange={(e) => setEditMobile(e.target.value)}
+                        placeholder="Enter 10-digit mobile number"
+                        maxLength="10"
+                      />
+                    ) : (
+                      profile?.mobile || "Not Available"
+                    )}
+                  </td>
+                </tr>
+
+                {/* ROLE */}
+
+                <tr>
+                  <td>
+                    <b>Role</b>
+                  </td>
+
+                  <td>{profile?.role || "Not Available"}</td>
+                </tr>
+
+                {/* USER TYPE */}
+
+                <tr>
+                  <td>
+                    <b>User Type</b>
+                  </td>
+
+                  <td>{profile?.userType || "Not Available"}</td>
+                </tr>
+
+                {/* STATUS */}
+
+                <tr>
+                  <td>
+                    <b>Status</b>
+                  </td>
+
+                  <td>{profile?.status || "Not Available"}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <br />
+
+            {/* EDIT / SAVE / CANCEL BUTTONS */}
+
+            {!editingProfile ? (
+              <button className="editBtn" onClick={handleEditProfile}>
+                ✏️ Edit Profile
+              </button>
+            ) : (
+              <>
+                <button className="addBtn" onClick={handleUpdateProfile}>
+                  💾 Save Changes
+                </button>{" "}
+                <button className="editBtn" onClick={handleCancelEdit}>
+                  ❌ Cancel
+                </button>
+              </>
+            )}
+
+            <br />
+            <br />
+
+            {/* CHANGE PASSWORD BUTTON */}
+
+            <button
+              className="editBtn"
+              onClick={() => {
+                setShowChangePassword(!showChangePassword);
+
+                setMessage("");
+                setError("");
+              }}
+            >
+              🔐 Change Password
+            </button>
+          </div>
         </div>
 
-    );
+        {/* CHANGE PASSWORD SECTION */}
 
+        {showChangePassword && (
+          <div className="cards">
+            <div className="card">
+              <h2>Change Password</h2>
+
+              {/* SEND OTP */}
+
+              {!otpSent && (
+                <div>
+                  <p>An OTP will be sent to your registered email address.</p>
+
+                  <button className="addBtn" onClick={handleSendOtp}>
+                    📧 Send OTP
+                  </button>
+                </div>
+              )}
+
+              {/* VERIFY OTP */}
+
+              {otpSent && !otpVerified && (
+                <div>
+                  <p>Enter the OTP sent to your registered email.</p>
+
+                  <input
+                    type="text"
+                    placeholder="Enter 6-digit OTP"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    maxLength="6"
+                  />
+
+                  <br />
+                  <br />
+
+                  <button className="addBtn" onClick={handleVerifyOtp}>
+                    Verify OTP
+                  </button>
+
+                  <br />
+                  <br />
+
+                  <button className="editBtn" onClick={handleSendOtp}>
+                    Resend OTP
+                  </button>
+                </div>
+              )}
+
+              {/* RESET PASSWORD */}
+
+              {otpVerified && (
+                <div>
+                  <p
+                    style={{
+                      color: "green",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    OTP Verified ✓
+                  </p>
+
+                  <input
+                    type="password"
+                    placeholder="Enter New Password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                  />
+
+                  <br />
+                  <br />
+
+                  <input
+                    type="password"
+                    placeholder="Confirm New Password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+
+                  <br />
+                  <br />
+
+                  <button className="addBtn" onClick={handleResetPassword}>
+                    Change Password
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default Profile;
