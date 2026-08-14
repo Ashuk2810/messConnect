@@ -9,7 +9,7 @@ The application is built using **React.js for the frontend, Spring Boot for the 
 ## 📸 Project Screenshots
 
 ### Login Page
-![Login Page](images/WhatsApp Image 2026-08-04 at 12.22.13 AM.jpeg)
+![Login Page](images/login.png)
 
 
 
@@ -18,7 +18,7 @@ The application is built using **React.js for the frontend, Spring Boot for the 
 
 **ADD IMAGE HERE**
 
-<!-- Add your admin dashboard screenshot here -->
+![Admin Page](images/AdminPage.png)
 
 ### User Dashboard
 
