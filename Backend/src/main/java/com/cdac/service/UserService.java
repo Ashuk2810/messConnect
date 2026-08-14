@@ -1,5 +1,7 @@
 package com.cdac.service;
 
+import com.cdac.dto.UserProfileUpdateRequest;
+
 import java.util.List;
 import com.cdac.enums.UserStatus;
 import com.cdac.dto.LoginRequest;
@@ -16,6 +18,10 @@ UserRegistrationResponse registerUser(UserRegistrationRequest request);
 LoginResponse login(LoginRequest loginRequest);
 
 UserProfileResponse getProfile(String userCode);
+
+UserProfileResponse updateMyProfile(
+        String userCode,
+        UserProfileUpdateRequest request);
 
 List<UserProfileResponse> getAllUsers();
 

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.cdac.dto.LoginRequest;
 import com.cdac.dto.LoginResponse;
 import com.cdac.dto.UserProfileResponse;
+import com.cdac.dto.UserProfileUpdateRequest;
 import com.cdac.dto.UserRegistrationRequest;
 import com.cdac.dto.UserRegistrationResponse;
 import com.cdac.entity.User;
@@ -25,8 +26,10 @@ import com.cdac.util.UserCodeGenerator;
 
 @Service
 public class UserServiceImpl implements UserService {
-@Autowired
-private EmailService emailService;
+
+    @Autowired
+    private EmailService emailService;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -44,7 +47,6 @@ private EmailService emailService;
             UserRegistrationRequest request) {
 
         validateMobile(request.getMobile());
-        
 
         String prefix =
                 UserCodeGenerator.getPrefix(request.getUserType());
@@ -70,6 +72,7 @@ private EmailService emailService;
                 PasswordGenerator.generatePassword(
                         request.getFullName(),
                         userCode);
+
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email is already registered");
         }
@@ -86,10 +89,11 @@ private EmailService emailService;
         user.setStatus(UserStatus.ACTIVE);
         user.setIsPasswordChanged(false);
         user.setOtpVerified(false);
-        
+
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email is already registered");
         }
+
         User savedUser = userRepository.save(user);
 
         Wallet wallet = new Wallet();
@@ -99,10 +103,12 @@ private EmailService emailService;
         wallet.setUser(savedUser);
 
         walletRepository.save(wallet);
-        emailService.sendRegistrationEmail( savedUser.getEmail(), 
-        		savedUser.getFullName(),
-        		savedUser.getUserCode(),
-        		password );
+
+        emailService.sendRegistrationEmail(
+                savedUser.getEmail(),
+                savedUser.getFullName(),
+                savedUser.getUserCode(),
+                password);
 
         return new UserRegistrationResponse(
                 "User Registered Successfully",
@@ -165,6 +171,40 @@ private EmailService emailService;
                                         "User Not Found"));
 
         return mapToProfileResponse(user);
+    }
+
+    // Update logged-in user's own profile
+    @Override
+    public UserProfileResponse updateMyProfile(
+            String userCode,
+            UserProfileUpdateRequest request) {
+
+        User user =
+                userRepository.findByUserCode(userCode)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "User Not Found"));
+
+        if (request.getFullName() == null ||
+                request.getFullName().trim().isEmpty()) {
+
+            throw new RuntimeException(
+                    "Full name cannot be empty");
+        }
+
+        validateMobile(request.getMobile());
+
+        // Only update the fields allowed for the user
+        user.setFullName(
+                request.getFullName().trim());
+
+        user.setMobile(
+                request.getMobile());
+
+        User updatedUser =
+                userRepository.save(user);
+
+        return mapToProfileResponse(updatedUser);
     }
 
     @Override

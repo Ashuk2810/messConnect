@@ -12,6 +12,7 @@ import com.cdac.dto.LoginRequest;
 import com.cdac.dto.LoginResponse;
 import com.cdac.dto.ResetPasswordRequest;
 import com.cdac.dto.UserProfileResponse;
+import com.cdac.dto.UserProfileUpdateRequest;
 import com.cdac.dto.UserRegistrationRequest;
 import com.cdac.dto.UserRegistrationResponse;
 import com.cdac.dto.VerifyOtpRequest;
@@ -80,6 +81,16 @@ public class UserController {
 
         return userService.getProfile(
                 authentication.getName());
+    }
+
+    @PutMapping("/profile")
+    public UserProfileResponse updateMyProfile(
+            Authentication authentication,
+            @RequestBody UserProfileUpdateRequest request) {
+
+        return userService.updateMyProfile(
+                authentication.getName(),
+                request);
     }
 
     @GetMapping("/test")
