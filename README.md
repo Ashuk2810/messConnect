@@ -9,16 +9,10 @@ The application is built using **React.js for the frontend, Spring Boot for the 
 ## 📸 Project Screenshots
 
 ### Login Page
-![Login Page](images/login.png)
-
-
-
 
 ### Admin Dashboard
 
-**ADD IMAGE HERE**
-
-![Admin Page](images/AdminPage.png)
+![Admin Page](Images/AdminPage.png)
 
 ### User Dashboard
 
